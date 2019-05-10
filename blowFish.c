@@ -533,14 +533,20 @@ void usage(char * bin_str) {
     printf("Usage: %s <filename with relative filepath> <mode(1: Sequential 2: Parallel)>\n", bin_str);
 }
 
-/*
 
-//Function to see contents of file before and after encryption
+/*
+*	Function to see contents of file 
+*	before and after encryption
+* 	It will only check contents till newline character.
+*/
 void printString(const char *ptr){         
     //for statement to print values using array             
-    for( ; *ptr!='?'; ++ptr)        
-    printf("%c", *ptr);        
-} */     
+    for( ; ; ++ptr){        
+		printf("%c", *ptr);
+		if(*ptr=='\n')
+			break;
+	}
+}     
 
 int main(int argc, char *argv[])
 {	
@@ -557,7 +563,7 @@ int main(int argc, char *argv[])
 	int mode = atoi(argv[2]);
 	uint64_t *file = fileReader(&fileSize, filePath);
 	size_t blockCount = fileSize/sizeof(uint64_t);
-	//printString(file);
+	printString(file);
 	
 	printf("File size = %lu bytes, Block Count = %lu\n", (unsigned long)fileSize, (unsigned long)blockCount/2);
 	// Encryption key
@@ -596,7 +602,7 @@ int main(int argc, char *argv[])
 		printf("Encryption Completed.\n");
 		printf("Encryption time: %lf milliseconds\n", processingTime*1e3);
 		printf("Hash of Encrypted File : %llx\n", (unsigned long long)encryptedFileHash);
-		//printString(file);
+		printString(file);
 		printf("Starting Sequential Decryption ...\n");
 		printf("...\n");
 		printf("...\n");
@@ -607,6 +613,7 @@ int main(int argc, char *argv[])
 		decryptedFileHash = hashingFunction(file, blockCount);
 	
 		printf("Decryption Completed.\n");
+		printString(file);
 		printf("Decryption time: %lf milliseconds\n", processingTime*1e3);
 		printf("Hash of Decrypted File : %llx\n", (unsigned long long)decryptedFileHash);
 	}else if(mode==2){
@@ -624,7 +631,7 @@ int main(int argc, char *argv[])
 		printf("Encryption Completed.\n");
 		printf("Encryption time: %lf milliseconds\n", processingTime*1e3);
 		printf("Hash of Encrypted File : %llx\n", (unsigned long long)encryptedFileHash);
-		//printString(file);
+		printString(file);
 		printf("Starting Parallel Decryption with OpenMP...\n");
 		printf("...\n");
 		printf("...\n");
@@ -635,6 +642,7 @@ int main(int argc, char *argv[])
 		decryptedFileHash = hashingFunction(file, blockCount);
 	
 		printf("Decryption Completed.\n");
+		printString(file);
 		printf("Decryption time: %lf milliseconds\n", processingTime*1e3);
 		printf("Hash of Decrypted File : %llx\n", (unsigned long long)decryptedFileHash);
 		
